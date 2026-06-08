@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JKUAT Hostel Portal</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* 📚 BOOK BACKGROUND */
+.bg {
+    background: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1600&q=80') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+}
+
+/* DARK OVERLAY FOR READABILITY */
+.overlay {
+    background: rgba(0,0,0,0.55);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* TITLE ONLY (LOGOS REMOVED) */
+.header {
+    text-align: center;
+    padding: 20px;
+}
+
+.title {
+    font-size: 34px;
+    font-weight: 900;
+    color: white;
+    text-shadow: 0 3px 12px rgba(0,0,0,0.9);
+    letter-spacing: 3px;
+}
+
+/* FORM BOX */
+.container {
+    max-width: 520px;
+    margin: auto;
+    margin-top: 20px;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.4);
+}
+
+h2 {
+    text-align: center;
+    color: #0b5d2a;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    background: #0b5d2a;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background: #09491f;
+}
+
+/* RECEIPT */
+.receipt {
+    display: none;
+    margin-top: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.receipt h3 {
+    text-align: center;
+    color: #0b5d2a;
+}
+
+.small {
+    font-size: 14px;
+    margin: 6px 0;
+}
+
+.verified {
+    text-align: center;
+    font-size: 20px;
+    color: green;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.qr {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg">
+<div class="overlay">
+
+    <!-- TITLE ONLY -->
+    <div class="header">
+        <div class="title">JKUH HOSTEL PORTAL</div>
+    </div>
+
+    <div class="container">
+
+        <h2>Student Hostel Access</h2>
+
+        <input type="text" id="name" placeholder="Full Name">
+        <input type="text" id="reg" placeholder="Registration Number">
+
+        <!-- HOSTEL BLOCK ADDED -->
+        <select id="block">
+            <option value="">Select Hostel Block</option>
+            <option>1A</option>
+            <option>1B</option>
+            <option>1C</option>
+            <option>2A</option>
+            <option>2B</option>
+            <option>2C</option>
+        </select>
+
+        <select id="year">
+            <option value="">Year of Study</option>
+            <option>Year 1</option>
+            <option>Year 2</option>
+            <option>Year 3</option>
+            <option>Year 4</option>
+        </select>
+
+        <button onclick="showPayment()">Continue</button>
+
+        <div id="payment" style="display:none;">
+            <h3>Payment Details</h3>
+            <p><b>Paybill:</b> 400200</p>
+            <p><b>Account:</b> 1095302</p>
+            <p><b>Amount:</b> KES 6,500</p>
+
+            <button onclick="generateReceipt()">Confirm Payment</button>
+        </div>
+
+        <div class="receipt" id="receipt">
+
+            <h3>JKUH HOSTEL RECEIPT</h3>
+
+            <div class="small" id="rName"></div>
+            <div class="small" id="rReg"></div>
+            <div class="small" id="rBlock"></div>
+            <div class="small" id="rYear"></div>
+            <div class="small" id="rRoom"></div>
+
+            <div class="qr" id="qrcode"></div>
+
+            <div class="verified">✓ VERIFIED HOSTEL ACCESS GRANTED</div>
+
+        </div>
+
+    </div>
+</div>
+</div>
+
+<script>
+
+function showPayment() {
+    let name = document.getElementById("name").value;
+    let reg = document.getElementById("reg").value;
+    let block = document.getElementById("block").value;
+    let year = document.getElementById("year").value;
+
+    if(!name || !reg || !block || !year){
+        alert("Fill all fields");
+        return;
+    }
+
+    document.getElementById("payment").style.display = "block";
+}
+
+function generateReceipt() {
+
+    let name = document.getElementById("name").value;
+    let reg = document.getElementById("reg").value;
+    let block = document.getElementById("block").value;
+    let year = document.getElementById("year").value;
+
+    let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    // ROOM FORMAT: BLOCK + RANDOM NUMBER + LETTER
+    let room = block + "-" +
+               Math.floor(100 + Math.random()*900) +
+               letters[Math.floor(Math.random()*letters.length)];
+
+    document.getElementById("rName").innerHTML = "<b>Name:</b> " + name;
+    document.getElementById("rReg").innerHTML = "<b>Reg No:</b> " + reg;
+    document.getElementById("rBlock").innerHTML = "<b>Hostel Block:</b> " + block;
+    document.getElementById("rYear").innerHTML = "<b>Year:</b> " + year;
+    document.getElementById("rRoom").innerHTML = "<b>Room Code:</b> " + room;
+
+    document.getElementById("receipt").style.display = "block";
+
+    document.getElementById("qrcode").innerHTML = "";
+
+    new QRCode(document.getElementById("qrcode"), {
+        text: "JKUH VERIFIED | " + name + " | " + reg + " | " + room,
+        width: 120,
+        height: 120
+    });
+}
+</script>
+
+</body>
+</html>
